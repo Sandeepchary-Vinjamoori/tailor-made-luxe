@@ -1,5 +1,4 @@
-
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -25,10 +24,59 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [profileFetchAttempts, setProfileFetchAttempts] = useState(0);
   const navigate = useNavigate();
 
+  const getProfile = useCallback(async () => {
+    try {
+      setLoading(true);
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        throw new Error("No session found");
+      }
+      
+      // Prevent excessive profile fetching if it's failing
+      if (profileFetchAttempts > 3) {
+        console.error("Too many failed profile fetch attempts, using basic user info");
+        setUser({
+          id: session.user.id,
+          email: session.user.email,
+        });
+        return;
+      }
+      
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .single();
+      
+      if (error) {
+        console.error("Error fetching profile:", error);
+        setProfileFetchAttempts(prev => prev + 1);
+        return;
+      }
+      
+      setUser({
+        id: session.user.id,
+        email: session.user.email,
+        first_name: data?.first_name,
+        last_name: data?.last_name,
+      });
+      
+      // Reset fetch attempts on success
+      setProfileFetchAttempts(0);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [profileFetchAttempts]);
+  
   useEffect(() => {
-    // Check for active session on mount
+    // Check for active session on mount with caching
     const checkSession = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -61,18 +109,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       async (event, session) => {
         if (event === "SIGNED_IN" && session) {
           // Fetch user profile when signed in
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", session.user.id)
-            .single();
-          
-          setUser({
-            id: session.user.id,
-            email: session.user.email,
-            first_name: profile?.first_name,
-            last_name: profile?.last_name,
-          });
+          try {
+            const { data: profile } = await supabase
+              .from("profiles")
+              .select("*")
+              .eq("id", session.user.id)
+              .single();
+            
+            setUser({
+              id: session.user.id,
+              email: session.user.email,
+              first_name: profile?.first_name,
+              last_name: profile?.last_name,
+            });
+          } catch (error) {
+            console.error("Error fetching profile on sign in:", error);
+          }
         } else if (event === "SIGNED_OUT") {
           setUser(null);
         }
@@ -84,39 +136,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       subscription.unsubscribe();
     };
   }, []);
-  
-  const getProfile = async () => {
-    try {
-      setLoading(true);
-      
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        throw new Error("No session found");
-      }
-      
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", session.user.id)
-        .single();
-      
-      if (error) {
-        throw error;
-      }
-      
-      setUser({
-        id: session.user.id,
-        email: session.user.email,
-        first_name: data.first_name,
-        last_name: data.last_name,
-      });
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
   
   const signIn = async (email: string, password: string) => {
     try {

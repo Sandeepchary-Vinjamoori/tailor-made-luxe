@@ -1,16 +1,33 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 const Dashboard = () => {
   const { user, signOut, getProfile } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch the latest user profile data
-    getProfile();
-  }, [getProfile]);
+    // Only fetch profile data if we don't have first_name yet
+    const fetchProfile = async () => {
+      if (user && !user.first_name) {
+        await getProfile();
+      }
+      setIsLoading(false);
+    };
+    
+    fetchProfile();
+  }, [user, getProfile]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-cream-light flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-navy-dark" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-cream-light">
@@ -35,7 +52,7 @@ const Dashboard = () => {
       <main className="container mx-auto px-6 py-12">
         <div className="bg-white rounded-xl shadow-soft p-8">
           <h1 className="text-3xl font-playfair font-bold mb-6">
-            Welcome, {user?.first_name || "User"}
+            Welcome, {user?.first_name || user?.email?.split('@')[0] || "User"}
           </h1>
           <p className="text-muted-foreground mb-8">
             Your personalized dashboard is ready. Explore our collections and start designing your custom clothes.
