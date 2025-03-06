@@ -1,12 +1,17 @@
 
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useSearchParams } from "react-router-dom";
-import { useEffect } from "react";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { signIn, user } = useAuth();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get("redirect");
 
@@ -19,6 +24,38 @@ const Login = () => {
     }
   }, [redirect]);
 
+  useEffect(() => {
+    // Redirect if user is already logged in
+    if (user) {
+      const redirectPath = sessionStorage.getItem("redirectPath");
+      if (redirectPath) {
+        sessionStorage.removeItem("redirectPath");
+        navigate(redirectPath);
+      } else {
+        navigate("/dashboard"); // Default redirect for logged in users
+      }
+    }
+  }, [user, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email || !password) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    
+    try {
+      setIsSubmitting(true);
+      await signIn(email, password);
+      
+      // The redirect will be handled in the useEffect above
+    } catch (error) {
+      // Error is handled in the auth context
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-cream-light px-6">
       <div className="w-full max-w-md bg-white rounded-xl shadow-soft p-8">
@@ -30,7 +67,7 @@ const Login = () => {
           <p className="text-muted-foreground">Sign in to access your account</p>
         </div>
         
-        <form className="space-y-5">
+        <form className="space-y-5" onSubmit={handleSubmit}>
           <div className="space-y-2">
             <label htmlFor="email" className="text-sm font-medium text-navy-dark">
               Email
@@ -39,6 +76,8 @@ const Login = () => {
               id="email" 
               placeholder="Enter your email" 
               type="email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full"
               required
             />
@@ -57,13 +96,19 @@ const Login = () => {
               id="password" 
               placeholder="Enter your password" 
               type="password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full"
               required 
             />
           </div>
           
-          <Button className="w-full bg-navy-dark hover:bg-navy text-white hover:text-white py-5">
-            Sign In
+          <Button 
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-navy-dark hover:bg-navy text-white hover:text-white py-5"
+          >
+            {isSubmitting ? "Signing In..." : "Sign In"}
           </Button>
           
           <div className="text-center text-sm text-muted-foreground">
