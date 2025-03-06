@@ -11,9 +11,21 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Collections from "./pages/Collections";
 import Dashboard from "./pages/Dashboard";
+import ProductListing from "./pages/ProductListing";
+import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+// Configure React Query with optimized settings
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      cacheTime: 1000 * 60 * 30, // 30 minutes
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -39,6 +51,22 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Collections />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/collections/:category" 
+              element={
+                <ProtectedRoute>
+                  <ProductListing />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/product/:id" 
+              element={
+                <ProtectedRoute>
+                  <ProductDetail />
                 </ProtectedRoute>
               } 
             />

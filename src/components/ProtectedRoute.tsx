@@ -19,17 +19,16 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       sessionStorage.setItem("redirectPath", location.pathname);
     }
     
-    // Set ready state when loading is done
+    // Set ready state when loading is done without delay for better performance
     if (!loading) {
-      // Small delay to ensure context is fully populated
-      const timer = setTimeout(() => setIsReady(true), 100);
-      return () => clearTimeout(timer);
+      setIsReady(true);
     }
   }, [user, loading, location]);
 
+  // Simple loading indicator with reduced state changes
   if (loading || !isReady) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-cream-light">
         <Loader2 className="h-8 w-8 animate-spin text-navy-dark" />
         <p className="mt-4 text-muted-foreground">Loading your profile...</p>
       </div>

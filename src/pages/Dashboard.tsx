@@ -2,12 +2,13 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
 const Dashboard = () => {
   const { user, signOut, getProfile } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Only fetch profile data if we don't have first_name yet
@@ -20,6 +21,10 @@ const Dashboard = () => {
     
     fetchProfile();
   }, [user, getProfile]);
+
+  const handleCategoryClick = (category: string) => {
+    navigate(`/collections/${category}`);
+  };
 
   if (isLoading) {
     return (
@@ -59,29 +64,38 @@ const Dashboard = () => {
           </p>
           
           <div className="grid gap-6 md:grid-cols-3">
-            <Link 
-              to="/collections/shirts" 
-              className="block p-6 bg-cream-light rounded-lg hover:shadow-md transition-shadow"
+            <div 
+              onClick={() => handleCategoryClick('shirts')}
+              className="block p-6 bg-cream-light rounded-lg hover:shadow-md transition-shadow cursor-pointer group"
             >
-              <h3 className="font-medium text-lg mb-2">Shirts</h3>
-              <p className="text-sm text-muted-foreground">Explore our custom shirt collection</p>
-            </Link>
+              <h3 className="font-medium text-lg mb-2 group-hover:text-gold transition-colors">Shirts</h3>
+              <p className="text-sm text-muted-foreground mb-3">Explore our custom shirt collection</p>
+              <span className="text-sm text-navy-dark/70 inline-block transition-transform duration-300 group-hover:translate-x-1 group-hover:text-gold">
+                View products →
+              </span>
+            </div>
             
-            <Link 
-              to="/collections/pants" 
-              className="block p-6 bg-cream-light rounded-lg hover:shadow-md transition-shadow"
+            <div 
+              onClick={() => handleCategoryClick('pants')}
+              className="block p-6 bg-cream-light rounded-lg hover:shadow-md transition-shadow cursor-pointer group"
             >
-              <h3 className="font-medium text-lg mb-2">Pants</h3>
-              <p className="text-sm text-muted-foreground">Discover perfectly fitted pants</p>
-            </Link>
+              <h3 className="font-medium text-lg mb-2 group-hover:text-gold transition-colors">Pants</h3>
+              <p className="text-sm text-muted-foreground mb-3">Discover perfectly fitted pants</p>
+              <span className="text-sm text-navy-dark/70 inline-block transition-transform duration-300 group-hover:translate-x-1 group-hover:text-gold">
+                View products →
+              </span>
+            </div>
             
-            <Link 
-              to="/collections/sherwani" 
-              className="block p-6 bg-cream-light rounded-lg hover:shadow-md transition-shadow"
+            <div 
+              onClick={() => handleCategoryClick('sherwani')}
+              className="block p-6 bg-cream-light rounded-lg hover:shadow-md transition-shadow cursor-pointer group"
             >
-              <h3 className="font-medium text-lg mb-2">Sherwani</h3>
-              <p className="text-sm text-muted-foreground">Elegant sherwani designs awaits</p>
-            </Link>
+              <h3 className="font-medium text-lg mb-2 group-hover:text-gold transition-colors">Sherwani</h3>
+              <p className="text-sm text-muted-foreground mb-3">Elegant sherwani designs awaits</p>
+              <span className="text-sm text-navy-dark/70 inline-block transition-transform duration-300 group-hover:translate-x-1 group-hover:text-gold">
+                View products →
+              </span>
+            </div>
           </div>
         </div>
       </main>
