@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Menu, X, ShoppingBag, User } from "lucide-react";
+import { ArrowRight, Menu, X, ShoppingBag, User, Mail } from "lucide-react";
 import CategoryCard from "@/components/CategoryCard";
 
 const Index = () => {
@@ -15,26 +15,26 @@ const Index = () => {
     {
       id: 1,
       name: "Shirts",
-      description: "Tailor-made shirts for every occasion",
-      image: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+      description: "Premium tailored shirts for every occasion",
+      image: "https://images.unsplash.com/photo-1603252109303-2751441dd157?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80"
     },
     {
       id: 2,
       name: "Pants",
-      description: "Custom-fit pants for ultimate comfort",
-      image: "https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1009&q=80"
+      description: "Designer trousers custom-fitted for comfort",
+      image: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=988&q=80"
     },
     {
       id: 3,
       name: "Suits",
-      description: "Elegant suits crafted to perfection",
-      image: "https://images.unsplash.com/photo-1553484771-047a44eee7a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1015&q=80"
+      description: "Bespoke suits crafted to perfection",
+      image: "https://images.unsplash.com/photo-1593032465175-481ac7f401a0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1480&q=80"
     },
     {
       id: 4,
       name: "Sherwani",
-      description: "Traditional elegance with modern fit",
-      image: "https://images.unsplash.com/photo-1621184455862-c163dfb30e0f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80"
+      description: "Traditional elegance with modern tailoring",
+      image: "https://images.unsplash.com/photo-1585486386884-46be29d80766?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80"
     }
   ];
 
@@ -54,11 +54,8 @@ const Index = () => {
 
   // Handle category click
   const handleCategoryClick = (categoryId: number) => {
-    // Show login prompt - this would normally navigate to the category page if logged in
-    document.getElementById("login-prompt")?.classList.remove("hidden");
-    setTimeout(() => {
-      document.getElementById("login-prompt")?.classList.add("hidden");
-    }, 3000);
+    // Navigate to login page with a message
+    navigate("/login");
   };
 
   return (
@@ -80,10 +77,9 @@ const Index = () => {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#" className="text-navy-dark hover:text-gold transition-custom link-hover">Home</a>
-              <a href="#" className="text-navy-dark hover:text-gold transition-custom link-hover">Collections</a>
-              <a href="#" className="text-navy-dark hover:text-gold transition-custom link-hover">About</a>
-              <a href="#" className="text-navy-dark hover:text-gold transition-custom link-hover">Contact</a>
+              <a href="#collections" className="text-navy-dark hover:text-gold transition-custom link-hover">Collections</a>
+              <a href="#about" className="text-navy-dark hover:text-gold transition-custom link-hover">About</a>
+              <a href="#contact" className="text-navy-dark hover:text-gold transition-custom link-hover">Contact</a>
             </nav>
 
             {/* Desktop Auth/Cart Buttons */}
@@ -130,28 +126,21 @@ const Index = () => {
         <div className="container mx-auto px-6 py-8 flex flex-col h-full">
           <nav className="flex flex-col space-y-6 text-lg">
             <a 
-              href="#" 
-              className="text-navy-dark hover:text-gold transition-custom pb-2 border-b border-muted"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Home
-            </a>
-            <a 
-              href="#" 
+              href="#collections" 
               className="text-navy-dark hover:text-gold transition-custom pb-2 border-b border-muted"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Collections
             </a>
             <a 
-              href="#" 
+              href="#about" 
               className="text-navy-dark hover:text-gold transition-custom pb-2 border-b border-muted"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               About
             </a>
             <a 
-              href="#" 
+              href="#contact" 
               className="text-navy-dark hover:text-gold transition-custom pb-2 border-b border-muted"
               onClick={() => setIsMobileMenuOpen(false)}
             >
@@ -189,14 +178,6 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Login Prompt Toast (shows when clicking category without login) */}
-      <div 
-        id="login-prompt"
-        className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-navy-dark text-white px-6 py-4 rounded-lg shadow-lg z-50 hidden animate-fade-in max-w-md"
-      >
-        <p className="text-center">Please sign in to personalize your fit!</p>
-      </div>
-
       {/* Hero Section */}
       <section className="pt-32 pb-16 md:pt-40 md:pb-24">
         <div className="container mx-auto px-6 lg:px-10">
@@ -204,13 +185,13 @@ const Index = () => {
             <div className="order-2 lg:order-1 animate-fade-in">
               <div className="space-y-6 max-w-xl">
                 <div className="inline-block px-3 py-1 bg-cream-dark text-navy-dark rounded-full text-sm font-medium animate-slide-in" style={{ animationDelay: "0.1s" }}>
-                  Luxury Custom Clothing
+                  Luxury Custom Menswear
                 </div>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight animate-slide-in" style={{ animationDelay: "0.2s" }}>
                   Perfect Fit, <span className="text-gradient-gold">Personalized</span> for You
                 </h1>
                 <p className="text-muted-foreground text-lg animate-slide-in" style={{ animationDelay: "0.3s" }}>
-                  Experience the luxury of custom-tailored clothing designed to embrace your unique style and measurements.
+                  Experience the luxury of custom-tailored menswear designed to embrace your unique style and measurements.
                 </p>
                 <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 pt-4 animate-slide-in" style={{ animationDelay: "0.4s" }}>
                   <Button 
@@ -231,8 +212,8 @@ const Index = () => {
             </div>
             <div className="order-1 lg:order-2 overflow-hidden rounded-xl animate-image-reveal shadow-soft">
               <img 
-                src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
-                alt="Tailored Clothing" 
+                src="https://images.unsplash.com/photo-1617137968427-85924c800a22?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" 
+                alt="Tailored Menswear" 
                 className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-700"
               />
             </div>
@@ -244,14 +225,14 @@ const Index = () => {
       <section className="py-16 bg-cream-dark">
         <div className="container mx-auto px-6 lg:px-10 max-w-4xl text-center">
           <blockquote className="text-2xl md:text-3xl font-playfair text-navy-dark italic leading-relaxed">
-            "Style is a way to say who you are without having to speak."
+            "The suit doesn't make the man, but it makes the man look good."
           </blockquote>
-          <p className="mt-4 text-gold font-medium">— Rachel Zoe</p>
+          <p className="mt-4 text-gold font-medium">— Tom Ford</p>
         </div>
       </section>
 
       {/* Categories Section */}
-      <section className="py-20 md:py-28">
+      <section id="collections" className="py-20 md:py-28">
         <div className="container mx-auto px-6 lg:px-10">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <div className="inline-block px-3 py-1 bg-cream-dark text-navy-dark rounded-full text-sm font-medium mb-4">
@@ -279,7 +260,7 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-navy-dark text-white">
+      <section id="about" className="py-20 bg-navy-dark text-white">
         <div className="container mx-auto px-6 lg:px-10">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <div className="inline-block px-3 py-1 bg-navy text-gold rounded-full text-sm font-medium mb-4">
@@ -370,12 +351,30 @@ const Index = () => {
               </div>
               <div className="hidden lg:block relative">
                 <img 
-                  src="https://images.unsplash.com/photo-1542060748-10c28b62716f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                  src="https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80" 
                   alt="Elegant Tailored Suit" 
                   className="rounded-xl shadow-md transform -rotate-2 hover:rotate-0 transition-all duration-500"
                 />
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-16 bg-cream-dark">
+        <div className="container mx-auto px-6 lg:px-10 max-w-4xl text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-navy-dark mb-6">
+            Get in Touch
+          </h2>
+          <p className="text-muted-foreground text-lg mb-8">
+            Have questions about our custom tailoring services? We're here to help.
+          </p>
+          <div className="flex justify-center items-center text-lg text-navy-dark">
+            <Mail size={20} className="mr-2 text-gold" />
+            <a href="mailto:tailormadeluxe@gmail.com" className="hover:text-gold transition-custom">
+              tailormadeluxe@gmail.com
+            </a>
           </div>
         </div>
       </section>
@@ -389,7 +388,7 @@ const Index = () => {
                 TailorMade<span className="text-gold">Luxe</span>
               </a>
               <p className="text-cream-light/70 mt-4">
-                Premium custom clothing, tailored to perfection for your unique style and measurements.
+                Premium custom menswear, tailored to perfection for your unique style and measurements.
               </p>
               <div className="flex space-x-4 mt-6">
                 <a href="#" className="text-cream-light/70 hover:text-gold transition-custom">
@@ -407,22 +406,25 @@ const Index = () => {
             <div>
               <h3 className="font-bold text-lg mb-4">Quick Links</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-cream-light/70 hover:text-gold transition-custom">Home</a></li>
-                <li><a href="#" className="text-cream-light/70 hover:text-gold transition-custom">Men's Collection</a></li>
-                <li><a href="#" className="text-cream-light/70 hover:text-gold transition-custom">Women's Collection</a></li>
-                <li><a href="#" className="text-cream-light/70 hover:text-gold transition-custom">How It Works</a></li>
-                <li><a href="#" className="text-cream-light/70 hover:text-gold transition-custom">About Us</a></li>
+                <li><a href="#collections" className="text-cream-light/70 hover:text-gold transition-custom">Collections</a></li>
+                <li><a href="#about" className="text-cream-light/70 hover:text-gold transition-custom">About Us</a></li>
+                <li><a href="#contact" className="text-cream-light/70 hover:text-gold transition-custom">Contact</a></li>
               </ul>
             </div>
             
             <div>
               <h3 className="font-bold text-lg mb-4">Customer Service</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-cream-light/70 hover:text-gold transition-custom">Contact Us</a></li>
                 <li><a href="#" className="text-cream-light/70 hover:text-gold transition-custom">FAQ</a></li>
                 <li><a href="#" className="text-cream-light/70 hover:text-gold transition-custom">Shipping & Returns</a></li>
                 <li><a href="#" className="text-cream-light/70 hover:text-gold transition-custom">Size Guide</a></li>
                 <li><a href="#" className="text-cream-light/70 hover:text-gold transition-custom">Privacy Policy</a></li>
+                <li>
+                  <a href="mailto:tailormadeluxe@gmail.com" className="text-cream-light/70 hover:text-gold transition-custom flex items-center">
+                    <Mail size={14} className="mr-1" /> 
+                    tailormadeluxe@gmail.com
+                  </a>
+                </li>
               </ul>
             </div>
             
