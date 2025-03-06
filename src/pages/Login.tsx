@@ -14,6 +14,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get("redirect");
+  
 
   useEffect(() => {
     // Show toast notification if we have a redirect from category
@@ -44,15 +45,24 @@ const Login = () => {
       toast.error("Please fill in all fields");
       return;
     }
-    
+    const [formData, setFormData] = useState({
+      email: email,
+      password: password
+    });
     try {
-      setIsSubmitting(true);
-      await signIn(email, password);
       
-      // The redirect will be handled in the useEffect above
+      const response = await fetch("http://localhost:8080/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      navigate("/dashboard");
+     
     } catch (error) {
       // Error is handled in the auth context
-      setIsSubmitting(false);
+
+      navigate("/register")
+      console.error(error);
     }
   };
 
@@ -88,7 +98,7 @@ const Login = () => {
               <label htmlFor="password" className="text-sm font-medium text-navy-dark">
                 Password
               </label>
-              <a href="#" className="text-xs text-gold hover:underline">
+              <a href="google.com" className="text-xs text-gold hover:underline">
                 Forgot password?
               </a>
             </div>

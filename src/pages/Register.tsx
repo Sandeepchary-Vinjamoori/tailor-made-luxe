@@ -15,25 +15,11 @@ const Register = () => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const { signUp, user } = useAuth();
-  const navigate = useNavigate();
+  
 
-  useEffect(() => {
-    // Redirect if user is already logged in
-    if (user) {
-      const redirectPath = sessionStorage.getItem("redirectPath");
-      if (redirectPath) {
-        sessionStorage.removeItem("redirectPath");
-        navigate(redirectPath);
-      } else {
-        navigate("/dashboard"); // Default redirect for logged in users
-      }
-    }
-  }, [user, navigate]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    console.log("hi");
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
       toast.error("Please fill in all fields");
       return;
@@ -44,18 +30,30 @@ const Register = () => {
       return;
     }
     
-    if (!termsAccepted) {
-      toast.error("Please accept the Terms of Service");
-      return;
-    }
     
+    const formdata={
+      first_Name:firstName,
+      last_Name:lastName,
+      email:email,
+      password:password
+    }
+    console.log(formdata);
     try {
-      setIsSubmitting(true);
-      await signUp(email, password, firstName, lastName);
       
+     const response = await fetch("http://localhost:8080/register",
+      {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(formdata)
+      }
+     )
+     const res= await response.text();
+     console.log(res);
+
       // The redirect will be handled in the useEffect above
     } catch (error) {
       // Error is handled in the auth context
+      console.error(error);
       setIsSubmitting(false);
     }
   };
@@ -149,7 +147,7 @@ const Register = () => {
             />
           </div>
           
-          <div className="flex items-start space-x-2">
+          {/* <div className="flex items-start space-x-2">
             <Input 
               id="terms" 
               type="checkbox" 
@@ -161,15 +159,9 @@ const Register = () => {
             <label htmlFor="terms" className="text-xs text-muted-foreground">
               I agree to the <a href="#" className="text-gold hover:underline">Terms of Service</a> and <a href="#" className="text-gold hover:underline">Privacy Policy</a>
             </label>
-          </div>
-          
-          <Button 
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-navy-dark hover:bg-navy text-white hover:text-white py-5"
-          >
-            {isSubmitting ? "Creating Account..." : "Create Account"}
-          </Button>
+           </div>
+           */}
+          <button type="submit" onClick={handleSubmit} >Create Account</button>
           
           <div className="text-center text-sm text-muted-foreground">
             Already have an account?{" "}
